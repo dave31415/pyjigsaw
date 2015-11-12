@@ -41,12 +41,20 @@ def get_person(person_id):
     return get(url_suffix)
 
 
-def get_all_people():
+def get_all_people(use_cached=False):
     """
     Get a list of all people content
     handle pagination and throttling limits
     :return:
     """
+
+    outfile = "%s/all_people.json" % data_dir
+    if use_cached:
+        try:
+            return json.load(open(outfile, 'r'))
+        except IOError:
+            print "Cannot read cached file: %s, reading from API"
+
     max_calls_per_min = 30
     page_max = 500
     seconds_to_wait = 70
@@ -70,7 +78,6 @@ def get_all_people():
               (url_suffix, page, len(more_people))
         people.extend(more_people)
     if write_to_file:
-        outfile = "%s/all_people.json" % data_dir
         json.dump(people, open(outfile, 'w'), indent=3)
         print 'wrote to: %s' % outfile
 
