@@ -2,7 +2,8 @@ import requests
 import json
 import time
 
-from params import api_token_file, base_url
+
+from params import api_token_file, base_url, data_dir
 token = open(api_token_file).read().strip()
 assert len(token) == 32
 headers = {'Authorization': token}
@@ -49,6 +50,7 @@ def get_all_people():
     max_calls_per_min = 30
     page_max = 500
     seconds_to_wait = 70
+    write_to_file = True
 
     # get page 1 and extract pagination link info
     result = get('/people', full_response=True)
@@ -67,24 +69,18 @@ def get_all_people():
         print "url: %s, page: %s, n_people=%s" % \
               (url_suffix, page, len(more_people))
         people.extend(more_people)
+    if write_to_file:
+        outfile = "%s/all_people.json" % data_dir
+        json.dump(people, open(outfile, 'w'), indent=3)
+        print 'wrote to: %s' % outfile
+
     return people
-
-
-def test_api():
-    """
-    Tests that the api can be hit and that authorization works
-    and that it can return one particular person who is likely
-    to be with the company for some time
-    :return:
-    """
-    # person id for one long time employee
-    content = get_person(10050)
-    assert content['preferredName'].endswith('immel')
 
 
 def get_projects():
     """
     Get all projects
+    Does NOT work
     :return:
     """
     # person id for one long time employee
