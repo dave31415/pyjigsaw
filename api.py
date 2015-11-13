@@ -47,7 +47,7 @@ def get_all_people(use_cached=False):
     handle pagination and throttling limits
     :return:
     """
-
+    start = time.time()
     outfile = "%s/all_people.json" % data_dir
     if use_cached:
         try:
@@ -83,6 +83,8 @@ def get_all_people(use_cached=False):
         json.dump(people, open(outfile, 'w'), indent=3)
         print 'wrote to: %s' % outfile
 
+    runtime = time.time() - start
+    print "runtime: %s seconds" % runtime
     return people
 
 
@@ -96,3 +98,10 @@ def get_projects():
     url_suffix = '/projects'
     content = get(url_suffix)
     return content
+
+
+if __name__ == "__main__":
+    # If run from the command line
+    # python api.py
+    # will get all people and write them to a file
+    people = get_all_people()
