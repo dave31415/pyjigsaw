@@ -55,10 +55,12 @@ def get_all_people(use_cached=False):
         except IOError:
             print "Cannot read cached file: %s, reading from API"
 
+    # params for throttling
     max_calls_per_min = 30
-    page_max = 500
     seconds_to_wait = 70
+
     write_to_file = True
+    page_max = 500
 
     # get page 1 and extract pagination link info
     result = get('/people', full_response=True)
@@ -87,7 +89,7 @@ def get_all_people(use_cached=False):
 def get_projects():
     """
     Get all projects
-    Does NOT work
+    Does NOT work, API might not be supported
     :return:
     """
     # person id for one long time employee
